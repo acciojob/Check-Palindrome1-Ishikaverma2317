@@ -1,15 +1,20 @@
-function isPalindrome(s) {
-  // Step 1: remove all non-alphanumeric characters and convert to lowercase
-  let cleaned = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+// server.js or app.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const palindrome = require('./palindrome');  // ✅ correct import
 
-  // Step 2: reverse the string
-  let reversed = cleaned.split('').reverse().join('');
+const app = express();
+app.use(bodyParser.json());
 
-  // Step 3: check if same forward and backward
-  return cleaned === reversed;
-}
+app.post('/palindromechecker', (req, res) => {
+  const { str } = req.body;
+  if (typeof str !== 'string') {
+    return res.status(400).json({ message: 'Invalid input' });
+  }
 
-// Example usage:
-console.log(isPalindrome("race a car"));   // false
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("raceCAR")); // true
+  const result = palindrome(str);
+  res.status(200).json({ result });  // ✅ Send valid JSON response
+});
+
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
